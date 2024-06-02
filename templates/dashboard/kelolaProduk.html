@@ -1,4 +1,7 @@
 {% extends 'dashboard/BaseDash.html' %}
+{% block title %}
+Kelola
+{% endblock %}
 {% block content %}
 
 <div class="content">
@@ -6,13 +9,17 @@
         <div style="display: flex;">
             <div>
                 <h2>Dashboard</h2>
-                <p class="subtitle">Wedding Box</p>
+                <p class="subtitle">Kelola Produk</p>
             </div>
             <div class="mt-1" style="margin-left: auto;">
                 <div type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#tambahData">Tambah
                     Data</div>
             </div>
         </div>
+        {% with msg = get_flashed_messages() %} {% if msg %} {% for msg in msg %}
+        <div class="alert alert-success" role="alert">{{msg}}</div>
+
+        {% endfor %} {% endif %} {% endwith %}
 
 
 
@@ -30,72 +37,52 @@
                         <th>Harga</th>
                         <th>Action</th>
                     </tr>
+
+
                 </thead>
                 <tbody>
+                    {% if produk_coll|length > 0 %}
+                    {% for barangs in produk_coll %}
+
+
                     <tr>
-                        <td>1</td>
-                        <td><img src="https://source.unsplash.com/random/100x100" alt="Gambar Barang"
-                                style="border-radius: 10px;"></td>
-                        <td>Produk Dummy</td>
-                        <td>Deskripsi Produk</td>
-                        <td>$100</td>
-                        <td>
-                            <button type="submit" class="btn btn-danger" title="Hapus">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                            <button type="submit" class="btn btn-primary" title="Edit" data-bs-toggle="modal"
+                        <td>{{ (pagination.page - 1) * pagination.per_page + loop.index }}</td>
+                        <td><img src="{{url_for('static', filename='uploads/' + barangs.image)}}" alt="Gambar Barang"
+                                width="130" height="130" style="border-radius: 10px;"></td>
+                        <td>{{barangs.name}}</td>
+                        <td class="description-cell">{{barangs.description}}</td>
+                        <td class="price-cell">{{barangs.price}}</td>
+                        <td class="action-cell">
+                            <form action="/kelolaproduk/delete/{{barangs._id|string}}" method="POST">
+                                <button type="submit" class="btn btn-danger" title="Hapus" onclick="conDelete()">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-primary" title="Edit" data-bs-toggle="modal"
                                 data-bs-target="#editData">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </td>
+
                     </tr>
+
+                    {% endfor %}
+                    {% endif %}
+
                 </tbody>
+
             </table>
         </div>
 
-        <!-- Modal tambah Data -->
-        <div class="modal fade" id="tambahData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/add" method="POST" enctype="multipart/form-data">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" placeholder="Masukkan Nama" name="name"
-                                    style="border-radius: 13px;" />
-                                <label for="floatingTextarea2">Nama Barang</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="number" placeholder="Masukkan Harga" name="harga"
-                                    style="border-radius: 13px;" />
-                                <label for="floatingTextarea2">Harga</label>
-                            </div>
-                            <div class="mb-3">
 
-                                <textarea class="form-control" name="description" id="description"
-                                    style="border-radius: 13px;" placeholder="Describe" required /></textarea>
-                            </div>
-                            <div class="mb-3 mt-4">
-                                <input type="file" class="form-control" id="image" accept=".png,.jpg,.jpeg"
-                                    name="images" style="border-radius: 13px;" />
-                            </div>
+        {{ pagination.links }}
 
 
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                            </div>
 
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End modal tambah data -->
+
+        {% for barangs in produk_coll %}
+
 
         <!-- Modal edit Data -->
         <div class="modal fade" id="editData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -106,14 +93,61 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/add" method="POST" enctype="multipart/form-data">
+                        <form action="/kelolaproduk/edit/{{barangs._id|string}}" method="POST"
+                            enctype="multipart/form-data">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="text" placeholder="Masukkan Nama" name="name"
+                                    style="border-radius: 13px;" value="{{barangs.name}}" />
+                                <label for="floatingTextarea2">Nama Produk</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" type="number" placeholder="Masukkan Harga" name="price"
+                                    style="border-radius: 13px;" value="{{barangs.price}}" />
+                                <label for="floatingTextarea2">Harga</label>
+                            </div>
+                            <div class="mb-3">
+
+                                <textarea class="form-control" name="description" id="description"
+                                    style="border-radius: 13px;" placeholder="Describe"
+                                    required />{{barangs.description}}</textarea>
+                            </div>
+                            <div class="mb-3 mt-4">
+                                <input type="file" class="form-control" id="image" accept=".png,.jpg,.jpeg"
+                                    name="images" style="border-radius: 13px;" />
+                            </div>
+
+
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- End modal edit data -->
+
+        <!-- Modal tambah Data -->
+        <div class="modal fade" id="tambahData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/kelolaproduk/add" method="POST" enctype="multipart/form-data">
                             <div class="form-floating mb-3">
                                 <input class="form-control" type="text" placeholder="Masukkan Nama" name="name"
                                     style="border-radius: 13px;" />
-                                <label for="floatingTextarea2">Nama Barang</label>
+                                <label for="floatingTextarea2">Nama Produk</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" type="number" placeholder="Masukkan Harga" name="harga"
+                                <input class="form-control" type="number" placeholder="Masukkan Harga" name="price"
                                     style="border-radius: 13px;" />
                                 <label for="floatingTextarea2">Harga</label>
                             </div>
@@ -131,7 +165,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
 
                         </form>
@@ -139,7 +173,12 @@
                 </div>
             </div>
         </div>
-        <!-- End modal edit data -->
+        <!-- End modal tambah data -->
     </div>
 </div>
+<script>
+    function conDelete() {
+        confirm("Apakah anda yakin ingin menghapus data?")
+    }
+</script>
 {% endblock %}

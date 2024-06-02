@@ -85,5 +85,17 @@
     
 }
 
+.description-cell {
+    max-width: 200px; 
+    max-height: 100px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+   
+}
 
-/* End style Dashboard */
+.action-cell{
+    display: flex;
+    gap: 4px;
+}
+
+/* End style Content Dashboard */
