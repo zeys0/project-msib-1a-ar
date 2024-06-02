@@ -138,5 +138,13 @@ def about():
 def order():
     return render_template("main/order.html")
 
+@app.route("/kelolapesanan")
+def kelolaPesanan():
+    return render_template("dashboard/kelolaPesanan.html")
+
+@app.route("/kelolapesanan/detail")
+def detail_pesanan():
+    return render_template("dashboard/detailPesanan.html")
+
 if __name__ == "__main__":
     app.run("0.0.0.0", port=8000, debug=True)

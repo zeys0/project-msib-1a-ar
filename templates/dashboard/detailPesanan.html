@@ -1,0 +1,41 @@
+{% extends 'dashboard/BaseDash.html' %}
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+        <div style="display: flex;">
+            <div>
+                <h2>Detail Pesanan</h2>
+                <p class="subtitle">Wedding Box</p>
+            </div>
+        </div>
+
+
+        <div class=" row">
+            <!-- Cards -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="gambar.png" alt="Gambar" class="img-fluid">
+                        </div>
+                        <div class="col-md-9">
+                            <h5 class="card-title">Lorem Ipsum</h5>
+                            <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting
+                                industry. Lorem Ipsum has been the industry's standard dummy text ever.</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Username pemesan: Lorem</li>
+                                <li class="list-group-item">Nama pemesan: Lorem</li>
+                                <li class="list-group-item">Alamat pemesan: Lorem</li>
+                                <li class="list-group-item">Tanggal pesanan: Lorem</li>
+                                <li class="list-group-item">Tanggal acara: Lorem</li>
+                                <li class="list-group-item">Jumlah box: Lorem</li>
+                                <li class="list-group-item">Total Harga: Lorem</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endblock %}
