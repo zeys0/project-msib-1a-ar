@@ -1,11 +1,13 @@
 import os
+import jwt
 from pymongo import MongoClient
 from os.path import join, dirname
 from dotenv import load_dotenv
-from flask_paginate import Pagination
+# from flask_paginate import Pagination
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 from bson import ObjectId
-import datetime
+from datetime import datetime, timedelta
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 dotenv_path = join(dirname(__file__), ".env")
@@ -133,6 +135,34 @@ def deleteDatasProduk(id):
 @app.route("/about")
 def about():
     return render_template("main/about.html")
+
+@app.route("/profile")
+def profile():
+    return render_template("main/profile.html")
+
+@app.route("/update_profile", methods=["POST"])
+def save_img():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {"profile_name": name_receive, "profile_info": about_receive}
+        if "file_give" in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+        db.users.update_one({"username": payload["id"]}, {"$set": new_doc})
+
+        return jsonify({ "result": "success", "msg": "Profile updated!" })
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 
 @app.route("/order")
 def order():

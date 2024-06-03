@@ -11,7 +11,12 @@
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
   <link rel="stylesheet" href="{{url_for('static', filename='css/base.css')}}">
-  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <script src="{{url_for('static', filename='js/main.js')}}"></script>
+
+  <script>
+    
+  </script>
+  
 </head>
 
 <body>
@@ -40,47 +45,47 @@
   <!-- end navbar konsumen -->
 
 
-  {% block content %}
-
-  {% endblock %}
-
-  <!-- footer konsumen -->
-  <div class="footer py-5 my-5 border-top">
-    <div class="container ">
-      <footer id="footer" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 ">
-        <div class="col mb-3">
-          <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none">
-            <img src="../../static/img/logo.png" alt="">
-          </a>
-          <p class="text-body-secondary">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolores ducimus
-            perferendis sint quo illum vero sed adipisci, quam est neque hic qui nesciunt voluptas, voluptates nulla
-            itaque minima quidem quas!</p>
+  <div class="container p-3">
+    <div class="row justify-content-center">
+      <div class="col-8">
+        <div class="card">
+          <div class="upload">
+            <img src="../../static/img/profile.jpg" width=100 height=100 alt="">
+            <div class="round">
+              <input id="input-pic" class="file-input" type="file" name="resume" />
+            </div>
+          </div>
+          <div class="m-3 px-3">
+            <div class="mb-3">
+              <label for="Username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="Username" placeholder="{{username}}">
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">Nama</label>
+              <input type="text" class="form-control" id="name" placeholder="Masukkan Nama anda">
+            </div>
+            <div class="mb-3">
+              <label for="noHp" class="form-label">No Telphone</label>
+              <input type="text" class="form-control" id="noHp" placeholder="Masukkan No Hp yg terhubung WhatsApp">
+            </div>
+            <div class="mb-3">
+              <label for="exampleFormControlInput1" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="Masukkan Email">
+            </div>
+            <div class="row justify-content-center ">
+              <div class="col-6 ">
+                <button type="button" onclick="update_profile()" class="btn btn-success col-7 mx-3">Simpan
+                  Perubahan</button>
+                <a href="/login" class="col-4"><button type="button" class="btn btn-outline-success ">Log
+                    Out</button></a>
+              </div>
+            </div>
+          </div>
         </div>
-
-
-        <div class="col mb-3 ">
-          <h5>Our Store</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="/" class="nav-link p-0 text-body-secondary">Home</a></li>
-            <li class="nav-item mb-2"><a href="/about" class="nav-link p-0 text-body-secondary">About</a></li>
-            <li class="nav-item mb-2"><a href="/produk" class="nav-link p-0 text-body-secondary">Products</a></li>
-            <li class="nav-item mb-2"><a href="/login" class="nav-link p-0 text-body-secondary">Login</a></li>
-          </ul>
-        </div>
-
-        <div class="col mb-3">
-          <h5>Get In Touch</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">lokasi</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">WhatsApp</a></li>
-            <li class="nav-item mb-2"><a href="https://www.instagram.com/initial_b.craft?igsh=b3htbjlraXpxMWRm"
-                class="nav-link p-0 text-body-secondary">Instagram</a></li>
-          </ul>
-        </div>
-      </footer>
+      </div>
     </div>
   </div>
-  <!-- end footer konsumen -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
