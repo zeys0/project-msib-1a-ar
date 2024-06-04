@@ -3,7 +3,7 @@ import jwt
 from pymongo import MongoClient
 from os.path import join, dirname
 from dotenv import load_dotenv
-# from flask_paginate import Pagination
+from flask_paginate import Pagination
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 from bson import ObjectId
 from datetime import datetime, timedelta
@@ -68,7 +68,7 @@ def addDatasProduk():
             os.makedirs(save_to)
 
         ext = image.filename.split(".")[-1]
-        file_name = f"img-{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.{ext}"
+        file_name = f"img-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.{ext}"
         image.save(f"{save_to}/{file_name}")
 
     db.products.insert_one(
@@ -100,7 +100,7 @@ def editDatasProduk(id):
             os.remove(target)
 
         ext = image.filename.split(".")[-1]
-        file_name = f"img-{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.{ext}"
+        file_name = f"img-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.{ext}"
         image.save(f"{save_to}/{file_name}")
 
         db.products.update_one({"_id": ObjectId(id)}, {"$set": {"image": file_name}})

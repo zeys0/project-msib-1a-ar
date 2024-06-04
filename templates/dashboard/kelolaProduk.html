@@ -16,12 +16,18 @@ Kelola
                     Data</div>
             </div>
         </div>
+
+        <!-- flash -->
         {% with msg = get_flashed_messages() %} {% if msg %} {% for msg in msg %}
         <div class="alert alert-success" role="alert">{{msg}}</div>
 
         {% endfor %} {% endif %} {% endwith %}
-
-
+        <script>
+            window.setTimeout(function () {
+                $(".alert-success").alert('close');
+            }, 3000);   
+        </script>
+        <!-- endflash -->
 
 
         <!-- Table -->
@@ -59,7 +65,7 @@ Kelola
                                 </button>
                             </form>
                             <button type="button" class="btn btn-primary" title="Edit" data-bs-toggle="modal"
-                                data-bs-target="#editData">
+                                data-bs-target="#editData{{barangs._id|string}}">
                                 <i class="fas fa-edit"></i>
                             </button>
                         </td>
@@ -85,7 +91,8 @@ Kelola
 
 
         <!-- Modal edit Data -->
-        <div class="modal fade" id="editData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editData{{barangs._id|string}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
