@@ -7,7 +7,7 @@ function update_profile() {
     let form_data = new FormData();
     form_data.append("file_give", file);
     form_data.append("username_give", username);
-    form_data.append("name_give", name);
+    form_data.append("nama_give", nama);
     form_data.append("noHp_give", noHp);
     form_data.append("email_give", email);
     console.log( file, username, nama, noHp,email, form_data);

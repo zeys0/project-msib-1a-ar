@@ -1,6 +1,6 @@
 import os
 import jwt
-from pymongo import MongoClient
+from pymongo import MongoClient, DESCENDING
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask_paginate import Pagination
@@ -142,31 +142,43 @@ def profile():
 
 @app.route("/update_profile", methods=["POST"])
 def save_img():
-    token_receive = request.cookies.get("mytoken")
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        username = payload["id"]
-        name_receive = request.form["name_give"]
-        about_receive = request.form["about_give"]
-        new_doc = {"profile_name": name_receive, "profile_info": about_receive}
+    # token_receive = request.cookies.get("mytoken")
+    # try:
+    #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+    #     username = payload["id"]
+        username_receive = request.form["username_give"]
+        nama_receive = request.form["nama_give"]
+        noHp_receive = request.form["noHp_give"]
+        email_receive = request.form["email_give"]
+        new_doc = {"profile_username": username_receive, 
+                    "profile_nama": nama_receive, 
+                    "profile_noHp": noHp_receive, 
+                    "profile_email": email_receive, 
+                   
+                   }
         if "file_give" in request.files:
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
+            file_path = f"profile_pics/{username_receive}.{extension}"
             file.save("./static/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
-        db.users.update_one({"username": payload["id"]}, {"$set": new_doc})
-
+        db.users.insert_one(new_doc) #ganti update kalo login udah
         return jsonify({ "result": "success", "msg": "Profile updated!" })
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+    # except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+    #     return redirect(url_for("home"))
+
 
 
 @app.route("/order")
 def order():
     return render_template("main/order.html")
+
+@app.route("/pesanan")
+def pesanan():
+    pesanan_collet = list(db.pesanan.find().sort('_id', DESCENDING))
+    return render_template("main/pesanan.html", pesanan_collet=pesanan_collet)
 
 @app.route("/kelolapesanan")
 def kelolaPesanan():
@@ -177,4 +189,4 @@ def detail_pesanan():
     return render_template("dashboard/detailPesanan.html")
 
 if __name__ == "__main__":
-    app.run("0.0.0.0", port=8000, debug=True)
+    app.run("0.0.0.0", port=5000, debug=True)
