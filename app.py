@@ -154,8 +154,7 @@ def save_img():
                     "profile_nama": nama_receive, 
                     "profile_noHp": noHp_receive, 
                     "profile_email": email_receive, 
-                   
-                   }
+                    }
         if "file_give" in request.files:
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
@@ -169,7 +168,35 @@ def save_img():
     # except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
     #     return redirect(url_for("home"))
 
+@app.route("/kelolapesanan")
+def kelolaPesanan():
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 5, type=int)
+    offset = (page - 1) * per_page
+    pesanan_on_page = list(db.orders.find().skip(offset).limit(per_page))
+    
+    pagination = Pagination(
+        page=page,
+        per_page=per_page,
+        total=db.orders.count_documents({}),
+        show_single_page=False,
+        alignment="end",
+    )
+    
+    return render_template(
+        "dashboard/kelolaPesanan.html",
+        pesanan_coll=pesanan_on_page,
+        pagination=pagination,
+    )
 
+@app.route("/detailpesanan/<id>")
+def detailPesanan(id):
+    pesanan = db.orders.find_one({"_id": ObjectId(id)})
+    if not pesanan:
+        flash("Pesanan tidak ditemukan.")
+        return redirect(url_for("kelolaPesanan"))
+    
+    return render_template("dashboard/detailPesanan.html", pesanan=pesanan)
 
 @app.route("/order")
 def order():
@@ -180,13 +207,10 @@ def pesanan():
     pesanan_collet = list(db.pesanan.find().sort('_id', DESCENDING))
     return render_template("main/pesanan.html", pesanan_collet=pesanan_collet)
 
-@app.route("/kelolapesanan")
-def kelolaPesanan():
-    return render_template("dashboard/kelolaPesanan.html")
-
-@app.route("/kelolapesanan/detail")
-def detail_pesanan():
-    return render_template("dashboard/detailPesanan.html")
+@app.route("/produk")
+def produk():
+    pesanan_collet = list(db.pesanan.find().sort('_id', DESCENDING))
+    return render_template("main/produk.html", pesanan_collet=pesanan_collet)
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)

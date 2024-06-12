@@ -10,39 +10,25 @@
             </div>
         </div>
 
+        <div class="row">
+            <!-- Iterate over each order -->
+            {% for pesanan in pesanan_coll %}
+            <div class="col-md-4 col-sm-12 card-content">
+                <div class="card mb-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Pesanan oleh: {{ pesanan.username }}</h5>
+                        <p class="card-text">Tanggal pesanan: {{ pesanan.order_date.strftime('%d-%m-%Y') }}</p>
+                        <p class="card-text">Total: Rp {{ pesanan.total }}</p>
+                        <a href="{{ url_for('detailPesanan', id=pesanan._id) }}" class="btn btn-primary w-100">Detail</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
 
-        <div class=" row">
-            <!-- Cards -->
-            <div class="col-md-4 col-sm-12 card-content">
-                <div class="card mb-3 shadow">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="row">
-                            <span>PESANAN</span>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-success  w-100">Detail</a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12 card-content">
-                <div class="card mb-3 shadow">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="row">
-                            <span>PESANAN</span>
-                        </div>
-                    </div>
-                    <a href="#" class="btn btn-success  w-100">Detail</a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-12 card-content">
-                <div class="card mb-3 shadow">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="row">
-                            <span>PESANAN</span>
-                        </div>
-                    </div>
-                    <a href="" class="btn btn-success  w-100">Detail</a>
-                </div>
-            </div>
+        <!-- Pagination controls -->
+        <div class="pagination">
+            {{ pagination.links }}
         </div>
     </div>
 </div>
