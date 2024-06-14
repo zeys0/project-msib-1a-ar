@@ -27,3 +27,51 @@ function update_profile() {
         },
     });
 }
+
+function login() {
+    let username = $("#username").val();
+    let password = $("#password").val();
+  
+    if (username === "") {
+      $("#help-id-login").text("Please input your id.");
+      $("#username").focus();
+      return;
+    } else {
+      $("#help-id-login").text("");
+    }
+  
+    if (password === "") {
+      $("#help-password-login").text("Please input your password.");
+      $("#password").focus();
+      return;
+    } else {
+      $("#help-password-login").text("");
+    }
+  
+    $.ajax({
+      type: "POST",
+      url: "/login",
+      data: {
+        username_give: username,
+        password_give: password,
+      },
+      success: function (response) {
+        if (response.result === "success") {
+            if(response.role === "user"){
+
+                alert("Login succes");
+                $.cookie("tokenuser", response["token"], { path: "/" });
+                window.location.replace("/");
+            }else if(response.role === "admin"){
+                alert("Login succes to admin");
+                $.cookie("mytoken", response["token"], { path: "/admin" });
+                window.location.replace("/admin");
+            }
+        } 
+      
+        else {
+          alert(response["msg"]);
+        }
+      },
+    });
+  }

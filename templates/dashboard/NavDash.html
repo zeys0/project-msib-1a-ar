@@ -9,16 +9,16 @@
             <li class="nav-item dropdown" style=" transform: translateX(-10px); z-index: 1;">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    John Doe
+                    {{user_info.username}}
                     <img src="{{url_for('static', filename='img/logo.png')}}" alt="Profile" class="rounded-circle me-2 "
                         style="width: 30px; margin-left: 4px;">
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px); ">
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                    <li><a class="dropdown-item" onclick="sign_out()" style="cursor: pointer;">Logout</a></li>
                 </ul>
             </li>
         </ul>

@@ -1,5 +1,6 @@
 import os
 import jwt
+import hashlib
 from pymongo import MongoClient, DESCENDING
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ from bson import ObjectId
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
+
 app = Flask(__name__)
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -16,6 +18,7 @@ load_dotenv(dotenv_path)
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
 SECRET_KEY = os.environ.get("SECRET_KEY")
+TOKEN_KEY = os.environ.get("TOKEN_KEY")
 
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
@@ -29,30 +32,66 @@ def hello():
 
 @app.route("/admin")
 def adminHome():
-    total_produk = db.products.count_documents({})
-    return render_template("dashboard/HomeDash.html", total_produk=total_produk)
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload.get("id")})
+        total_produk = db.products.count_documents({})
+        return render_template(
+            "dashboard/HomeDash.html", total_produk=total_produk, user_info=user_info
+        )
+    except jwt.ExpiredSignatureError:
+        msg = "Your token has expired"
+        return redirect(url_for("login"), msg=msg)
+    except jwt.exceptions.DecodeError:
+        msg = "There was a problem logging you in"
+        return redirect(url_for("login"))
 
 
-@app.route("/kelolaproduk")
+@app.route("/admin/kelolaproduk")
 def kelolaProduk():
-    # Pagination
-    page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", 3, type=int)
-    offset = (page - 1) * per_page
-    produk_on_page = list(db.products.find().skip(offset).limit(per_page))
-    pagination = Pagination(
-        page=page,
-        per_page=per_page,
-        total=db.products.count_documents({}),
-        show_single_page=False,
-        alignment="end",
-    )
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload.get("id")})
+        page = request.args.get("page", 1, type=int)
+        per_page = request.args.get("per_page", 3, type=int)
+        offset = (page - 1) * per_page
+        produk_on_page = list(db.products.find().skip(offset).limit(per_page))
+        pagination = Pagination(
+            page=page,
+            per_page=per_page,
+            total=db.products.count_documents({}),
+            show_single_page=False,
+            alignment="end",
+        )
 
-    return render_template(
-        "dashboard/kelolaProduk.html",
-        produk_coll=produk_on_page,
-        pagination=pagination,
-    )
+        return render_template(
+            "dashboard/kelolaproduk.html",
+            produk_coll=produk_on_page,
+            pagination=pagination,
+            user_info=user_info,
+        )
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
+    # Pagination
+    # page = request.args.get("page", 1, type=int)
+    # per_page = request.args.get("per_page", 3, type=int)
+    # offset = (page - 1) * per_page
+    # produk_on_page = list(db.products.find().skip(offset).limit(per_page))
+    # pagination = Pagination(
+    #     page=page,
+    #     per_page=per_page,
+    #     total=db.products.count_documents({}),
+    #     show_single_page=False,
+    #     alignment="end",
+    # )
+
+    # return render_template(
+    #     "dashboard/kelolaProduk.html",
+    #     produk_coll=produk_on_page,
+    #     pagination=pagination,
+    # )
 
 
 @app.route("/kelolaproduk/add", methods=["POST"])
@@ -132,13 +171,16 @@ def deleteDatasProduk(id):
     flash("Data berhasil dihapus")
     return redirect(url_for("kelolaProduk"))
 
+
 @app.route("/about")
 def about():
     return render_template("main/about.html")
 
+
 @app.route("/profile")
 def profile():
     return render_template("main/profile.html")
+
 
 @app.route("/update_profile", methods=["POST"])
 def save_img():
@@ -146,27 +188,31 @@ def save_img():
     # try:
     #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
     #     username = payload["id"]
-        username_receive = request.form["username_give"]
-        nama_receive = request.form["nama_give"]
-        noHp_receive = request.form["noHp_give"]
-        email_receive = request.form["email_give"]
-        new_doc = {"profile_username": username_receive, 
-                    "profile_nama": nama_receive, 
-                    "profile_noHp": noHp_receive, 
-                    "profile_email": email_receive, 
-                    }
-        if "file_give" in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username_receive}.{extension}"
-            file.save("./static/" + file_path)
-            new_doc["profile_pic"] = filename
-            new_doc["profile_pic_real"] = file_path
-        db.users.insert_one(new_doc) #ganti update kalo login udah
-        return jsonify({ "result": "success", "msg": "Profile updated!" })
-    # except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-    #     return redirect(url_for("home"))
+    username_receive = request.form["username_give"]
+    nama_receive = request.form["nama_give"]
+    noHp_receive = request.form["noHp_give"]
+    email_receive = request.form["email_give"]
+    new_doc = {
+        "profile_username": username_receive,
+        "profile_nama": nama_receive,
+        "profile_noHp": noHp_receive,
+        "profile_email": email_receive,
+    }
+    if "file_give" in request.files:
+        file = request.files["file_give"]
+        filename = secure_filename(file.filename)
+        extension = filename.split(".")[-1]
+        file_path = f"profile_pics/{username_receive}.{extension}"
+        file.save("./static/" + file_path)
+        new_doc["profile_pic"] = filename
+        new_doc["profile_pic_real"] = file_path
+    db.users.insert_one(new_doc)  # ganti update kalo login udah
+    return jsonify({"result": "success", "msg": "Profile updated!"})
+
+
+# except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#     return redirect(url_for("home"))
+
 
 @app.route("/kelolapesanan")
 def kelolaPesanan():
@@ -174,7 +220,7 @@ def kelolaPesanan():
     per_page = request.args.get("per_page", 5, type=int)
     offset = (page - 1) * per_page
     pesanan_on_page = list(db.orders.find().skip(offset).limit(per_page))
-    
+
     pagination = Pagination(
         page=page,
         per_page=per_page,
@@ -182,12 +228,13 @@ def kelolaPesanan():
         show_single_page=False,
         alignment="end",
     )
-    
+
     return render_template(
         "dashboard/kelolaPesanan.html",
         pesanan_coll=pesanan_on_page,
         pagination=pagination,
     )
+
 
 @app.route("/detailpesanan/<id>")
 def detailPesanan(id):
@@ -195,22 +242,61 @@ def detailPesanan(id):
     if not pesanan:
         flash("Pesanan tidak ditemukan.")
         return redirect(url_for("kelolaPesanan"))
-    
+
     return render_template("dashboard/detailPesanan.html", pesanan=pesanan)
+
 
 @app.route("/order")
 def order():
     return render_template("main/order.html")
 
+
 @app.route("/pesanan")
 def pesanan():
-    pesanan_collet = list(db.pesanan.find().sort('_id', DESCENDING))
+    pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
     return render_template("main/pesanan.html", pesanan_collet=pesanan_collet)
+
 
 @app.route("/produk")
 def produk():
-    pesanan_collet = list(db.pesanan.find().sort('_id', DESCENDING))
+    pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
     return render_template("main/produk.html", pesanan_collet=pesanan_collet)
 
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login/login.html")
+
+    else:
+        username_receive = request.form["username_give"]
+        password_receive = request.form["password_give"]
+        # password_hash = hashlib.sha3_256(password_receive.encode("utf-8")).hexdigest()
+        result = db.users.find_one(
+            {
+                "username": username_receive,
+                "password": password_receive,
+            }
+        )
+
+        if result:
+            role = result.get("role", "user")
+            payload = {
+                "id": username_receive,
+                "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+            return jsonify({"result": "success", "token": token, "role": role})
+
+        else:
+            return jsonify(
+                {
+                    "result": "fail",
+                    "msg": "We could not find a user with that id/password combination",
+                }
+            )
+
+
 if __name__ == "__main__":
-    app.run("0.0.0.0", port=5000, debug=True)
+    app.run("0.0.0.0", port=8000, debug=True)

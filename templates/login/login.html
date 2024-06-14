@@ -1,0 +1,29 @@
+{% extends 'login/baselogin.html' %}
+
+{% block content %}
+
+
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="col-md-4">
+        <h2 class="text-center">Sign In</h2>
+        <p class="text-center">Enter your username and password</p>
+
+        <div class="form-group">
+            <input type="text" class="form-control" name="username_give" placeholder="Username" id="username">
+            <p id="help-id-login" class="help is-danger"></p>
+
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password_give" placeholder="Password" id="password">
+            <p id="help-password-login" class="help is-danger"></p>
+
+        </div>
+        <button class="btn btn-dark btn-block" onclick="login()">Sign In</button>
+
+        <div class="text-center mt-3">
+            <a href="#">Don't have an account? Sign Up</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
