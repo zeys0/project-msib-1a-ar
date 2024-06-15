@@ -296,7 +296,51 @@ def login():
                     "msg": "We could not find a user with that id/password combination",
                 }
             )
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # Here, add logic to handle the new user registration
+        return redirect(url_for('home'))
+    return render_template('signup.html')
+
+@app.route('/')
+def home():
+    featured_products = db['products'].find()
+    tips = db['tips'].find()
+    return render_template('home.html', featured_products=featured_products, tips=tips)
 
 
+
+def seed_database():
+    client = MongoClient('mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+    db = client['wedding_box_rental']
+
+    # Hapus koleksi jika sudah ada sebelumnya
+    db['products'].drop()
+    db['tips'].drop()
+
+    # Data produk sampel
+    products = [
+        {"name": "Floral Fantasy", "description": "Beautiful floral arrangement", "price": 99},
+        {"name": "Modern Elegance", "description": "Chic table setting", "price": 79},
+        {"name": "Love Story", "description": "Romantic decor set", "price": 129},
+    ]
+
+    # Data tips sampel
+    tips = [
+        {"title": "Choosing the Right Venue", "description": "Tips on selecting the perfect venue."},
+        {"title": "Floral Arrangement Ideas", "description": "Explore trending floral arrangements."},
+    ]
+
+    # Masukkan data ke dalam koleksi
+    db['products'].insert_many(products)
+    db['tips'].insert_many(tips)
+    print("Database has been seeded!")
+
+
+if __name__ == "__main__":
+    seed_database()
 if __name__ == "__main__":
     app.run("0.0.0.0", port=8000, debug=True)
