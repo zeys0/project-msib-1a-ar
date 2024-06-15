@@ -25,9 +25,9 @@ db = client[DB_NAME]
 app.secret_key = SECRET_KEY
 
 
-@app.route("/")
-def hello():
-    return render_template("main/home.html")
+# @app.route("/")
+# def hello():
+#     return render_template("main/home.html")
 
 
 @app.route("/admin")
@@ -271,11 +271,11 @@ def login():
     else:
         username_receive = request.form["username_give"]
         password_receive = request.form["password_give"]
-        # password_hash = hashlib.sha3_256(password_receive.encode("utf-8")).hexdigest()
+        password_hash = hashlib.sha3_256(password_receive.encode("utf-8")).hexdigest()
         result = db.users.find_one(
             {
                 "username": username_receive,
-                "password": password_receive,
+                "password": password_hash,
             }
         )
 
@@ -296,47 +296,84 @@ def login():
                     "msg": "We could not find a user with that id/password combination",
                 }
             )
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        # Here, add logic to handle the new user registration
-        return redirect(url_for('home'))
-    return render_template('signup.html')
 
-@app.route('/')
+
+@app.route("/signup", methods=["GET", "POST"])
+def sign_up():
+    if request.method == "GET":
+        return render_template("login/signup.html")
+    else:
+        try:
+            username_receive = request.form.get("username_give")
+            password_receive = request.form.get("password_give")
+            password_hash = hashlib.sha3_256(
+                password_receive.encode("utf-8")
+            ).hexdigest()
+
+            doc = {
+                "username": username_receive,
+                "password": password_hash,
+                "profile_name": username_receive,
+                "profile_pic": "",
+                "profile_pic_real": "img/profile.jpg",
+                "profile_info": "",
+                "no_telepon": "",
+                "email": "",
+                "role": "user",
+            }
+            db.users.insert_one(doc)
+
+            return jsonify({"result": "success"})
+        except Exception as e:
+            app.logger.error(f"Error during signup: {e}")
+            return jsonify({"result": "error", "message": "Internal Server Error"}), 500
+
+
+@app.route("/")
 def home():
-    featured_products = db['products'].find()
-    tips = db['tips'].find()
-    return render_template('home.html', featured_products=featured_products, tips=tips)
-
+    featured_products = db["products"].find()
+    tips = db["tips"].find()
+    return render_template(
+        "main/home.html", featured_products=featured_products, tips=tips
+    )
 
 
 def seed_database():
-    client = MongoClient('mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-    db = client['wedding_box_rental']
+    client = MongoClient(
+        "mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    )
+    db = client["wedding_box_rental"]
 
     # Hapus koleksi jika sudah ada sebelumnya
-    db['products'].drop()
-    db['tips'].drop()
+    db["products"].drop()
+    db["tips"].drop()
 
     # Data produk sampel
     products = [
-        {"name": "Floral Fantasy", "description": "Beautiful floral arrangement", "price": 99},
+        {
+            "name": "Floral Fantasy",
+            "description": "Beautiful floral arrangement",
+            "price": 99,
+        },
         {"name": "Modern Elegance", "description": "Chic table setting", "price": 79},
         {"name": "Love Story", "description": "Romantic decor set", "price": 129},
     ]
 
     # Data tips sampel
     tips = [
-        {"title": "Choosing the Right Venue", "description": "Tips on selecting the perfect venue."},
-        {"title": "Floral Arrangement Ideas", "description": "Explore trending floral arrangements."},
+        {
+            "title": "Choosing the Right Venue",
+            "description": "Tips on selecting the perfect venue.",
+        },
+        {
+            "title": "Floral Arrangement Ideas",
+            "description": "Explore trending floral arrangements.",
+        },
     ]
 
     # Masukkan data ke dalam koleksi
-    db['products'].insert_many(products)
-    db['tips'].insert_many(tips)
+    db["products"].insert_many(products)
+    db["tips"].insert_many(tips)
     print("Database has been seeded!")
 
 

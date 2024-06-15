@@ -1,0 +1,143 @@
+html, body {
+  overflow-x: hidden; 
+}
+
+.carousel-item {
+  height: 80vh;
+  width: 500vh;
+  position: relative;
+}
+.carousel-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.carousel-item,
+.carousel-item img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.image-container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.image-container img {
+  opacity: 0.5;
+  /* Adjust the transparency level (0 to 1) */
+  width: 50%;
+}
+
+.centered-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Monotype Corsiva';
+  font-size: 7rem;
+  font-weight: bold;
+  /* Make the text bold */
+}
+
+.carousel-caption {
+  font-family: "Monotype Corsiva", cursive;
+  text-align: center;
+  position: absolute;
+  margin-right: 10px;
+  transform: translate(-50%, -50%);
+  color: white;
+  /* Ensures the text color is white */
+}
+
+.carousel-caption h1 {
+  font-size: 7.5rem;
+  /* Adjust the font size as needed */
+}
+
+.carousel-caption p {
+  font-size: 1.rem;
+  /* Adjust the font size as needed */
+}
+
+.blog-section {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-section::before,
+.blog-section::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: #ccc;
+}
+
+.blog-section h2 {
+  margin: 0 10px;
+  white-space: nowrap;
+  font-family: 'Monotype Corsiva';
+  font-size: 3.5rem;
+}
+
+#footer a img {
+  width: 70px;
+  height: auto;
+}
+
+.footer {
+  margin-bottom: 90px;
+}
+
+#photoAlbum {
+  display: none;
+  margin-top: 20px;
+  animation: slideIn 1s forwards;
+}
+
+#showadvice {
+  display: none;
+  margin-top: 20px;
+  animation: slideIn 1s forwards;
+}
+
+#showVenue {
+  display: none;
+  margin-top: 20px;
+  animation: slideIn 1s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.album-photo {
+  margin: 10px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+}
+
+
+
+
+
+
