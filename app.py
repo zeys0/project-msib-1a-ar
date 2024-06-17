@@ -24,11 +24,13 @@ client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 app.secret_key = SECRET_KEY
 
-
-# @app.route("/")
-# def hello():
-#     return render_template("main/home.html")
-
+@app.route("/")
+def home():
+    featured_products = db["products"].find()
+    tips = db["tips"].find()
+    return render_template(
+        "main/home.html", featured_products=featured_products, tips=tips
+    )
 
 @app.route("/admin")
 def adminHome():
@@ -177,41 +179,52 @@ def about():
     return render_template("main/about.html")
 
 
-@app.route("/profile")
-def profile():
-    return render_template("main/profile.html")
+@app.route("/profile/<username>")
+def profile(username):
+    # an endpoint for retrieving a user's profile information
+    # and all of their posts
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        # if this is my own profile, True
+        # if this is somebody else's profile, False
+        status = username == payload["id"]
+
+        user_info = db.users.find_one({"username": username}, {"_id": False})
+        return render_template("profile.html", user_info=user_info, status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 
 
 @app.route("/update_profile", methods=["POST"])
 def save_img():
-    # token_receive = request.cookies.get("mytoken")
-    # try:
-    #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-    #     username = payload["id"]
-    username_receive = request.form["username_give"]
-    nama_receive = request.form["nama_give"]
-    noHp_receive = request.form["noHp_give"]
-    email_receive = request.form["email_give"]
-    new_doc = {
-        "profile_username": username_receive,
-        "profile_nama": nama_receive,
-        "profile_noHp": noHp_receive,
-        "profile_email": email_receive,
-    }
-    if "file_give" in request.files:
-        file = request.files["file_give"]
-        filename = secure_filename(file.filename)
-        extension = filename.split(".")[-1]
-        file_path = f"profile_pics/{username_receive}.{extension}"
-        file.save("./static/" + file_path)
-        new_doc["profile_pic"] = filename
-        new_doc["profile_pic_real"] = file_path
-    db.users.insert_one(new_doc)  # ganti update kalo login udah
-    return jsonify({"result": "success", "msg": "Profile updated!"})
-
-
-# except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-#     return redirect(url_for("home"))
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        username = payload["id"]
+        username_receive = request.form["username_give"]
+        nama_receive = request.form["nama_give"]
+        noHp_receive = request.form["noHp_give"]
+        email_receive = request.form["email_give"]
+        new_doc = {
+        "username": username_receive,
+        "profile_name": nama_receive,
+        "no_telepon": noHp_receive,
+        "email": email_receive,
+        }
+        if "file_give" in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+        db.users.update_one({"username": payload["id"]}, {"$set": new_doc})
+        return jsonify({"result": "success", "msg": "Profile updated!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 
 @app.route("/kelolapesanan")
@@ -317,8 +330,8 @@ def sign_up():
                 "profile_pic": "",
                 "profile_pic_real": "img/profile.jpg",
                 "profile_info": "",
-                "no_telepon": "",
-                "email": "",
+                "no_telepon": "Masukkan No.Thelephon yang terhubung WhatsApp",
+                "email": "Masukkan email",
                 "role": "user",
             }
             db.users.insert_one(doc)
@@ -327,15 +340,6 @@ def sign_up():
         except Exception as e:
             app.logger.error(f"Error during signup: {e}")
             return jsonify({"result": "error", "message": "Internal Server Error"}), 500
-
-
-@app.route("/")
-def home():
-    featured_products = db["products"].find()
-    tips = db["tips"].find()
-    return render_template(
-        "main/home.html", featured_products=featured_products, tips=tips
-    )
 
 
 def seed_database():

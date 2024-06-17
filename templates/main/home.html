@@ -1,27 +1,16 @@
 {% extends "main/base.html" %}
 
-{% block header %}
-<!-- header -->
-<!DOCTYPE html>
-<html lang="en">
+  {% block header %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Bootstrap CSS -->
+  <style>
+    .navbar-nav .nav-link {
+      color: rgb(248, 250, 252);
+      text-underline-offset: 10px;
+  }
+  </style>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-
-</head>
-
-<body>
-
-
+<div class="home">
+  <!-- header -->
   <header id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
 
     <div class="carousel-indicators">
@@ -33,14 +22,11 @@
         aria-label="Slide 3"></button>
     </div>
 
-
-
     <div class="carousel-inner mb-4">
       <div class="carousel-item active">
         <img src="{{ url_for('static', filename='images/header1.jpg') }}" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block" style="margin-left: 15px;">
-          <h1 style="font-size: 5.5em; font-family: 'Monotype Corsiva', cursive;">Elegant Wedding
-            Boxes for Rent</h1>
+        <div class="carousel-caption d-none d-md-block" style="padding-left: 15px;">
+          <h2 style="font-size: 5.5em; font-family: 'Monotype Corsiva', cursive;">Elegant Wedding Boxes for Rent</h2>
           <p>Make your special day even more magical with our curated wedding box rentals.</p>
         </div>
       </div>
@@ -48,7 +34,7 @@
 
         <img src="{{ url_for('static', filename='images/header2.jpg') }}" class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
-          <h5>Exclusive Wedding Box Offers</h1>
+          <h5>Exclusive Wedding Box Offers
           </h5>
           <p>Unlock your potential with our high-quality Wedding Boxes.</p>
         </div>
@@ -73,80 +59,64 @@
     </button>
   </header>
 
+  <!--akhir headeer-->
+  {% endblock %}
 
-</body>
-
-</html>
-
-
-
-<!--akhir headeer-->
-{% endblock %}
-
-{% block content %}
-<div class="card mb-2" style="max-width: 740px; max-height:300px;">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{ url_for('static', filename='images/3.jpg') }}" class="img-fluid rounded-start" alt="...">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">Featured Products</h5>
-        <p class="card-text">Explore our top picks for your wedding .</p>
-        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+  {% block content %}
+  <div class="card mb-2" style="max-width: 740px; max-height:300px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{ url_for('static', filename='images/3.jpg') }}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Featured Products</h5>
+          <p class="card-text">Explore our top picks for your wedding .</p>
+          <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="row row-cols-1 row-cols-md-3 g-4">
-  <div class="col">
-    <div class="card h-100">
-      <img src="{{ url_for('static', filename='images/4.jpg') }}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Beautiful Floral Engagement</h5>
-        <p class="card-text">Floral Fantasy.</p>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='images/4.jpg') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Beautiful Floral Engagement</h5>
+          <p class="card-text">Floral Fantasy.</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-body-secondary">Starting from$99 </small>
+        </div>
       </div>
-      <div class="card-footer">
-        <small class="text-body-secondary">Starting from$99 </small>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='images/5.jpg') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Modern Elegance Wedding</h5>
+          <p class="card-text">Romantic Series.</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-body-secondary">Starting from$79 </small>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='images/6.jpg') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Romantic Wedding Decor</h5>
+          <p class="card-text">Love Story .</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-body-secondary">Starting from$129 </small>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col">
-    <div class="card h-100">
-      <img src="{{ url_for('static', filename='images/5.jpg') }}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Modern Elegance Wedding</h5>
-        <p class="card-text">Romantic Series.</p>
-      </div>
-      <div class="card-footer">
-        <small class="text-body-secondary">Starting from$79 </small>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="card h-100">
-      <img src="{{ url_for('static', filename='images/6.jpg') }}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Romantic Wedding Decor</h5>
-        <p class="card-text">Love Story .</p>
-      </div>
-      <div class="card-footer">
-        <small class="text-body-secondary">Starting from$129 </small>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!--awal wedding tips-->
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wedding Tips & Inspiration</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-
-<body>
+  <!--awal wedding tips-->
   <div class="container">
     <div class="row">
       <div class="col-8">
@@ -455,11 +425,4 @@
 
   <!--end gallery-->
   {% endblock %}
-
-
-
-</body>
-
-</html>
-<!-- end footer konsumen -->
-<!-- end footer-->
+</div>

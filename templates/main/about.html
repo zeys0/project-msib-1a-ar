@@ -1,25 +1,37 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<style>
+    .navbar-nav .nav-link {
+        color: rgb(5, 5, 5);
+        text-underline-offset: 10px;
+    }
+</style>
+<div class="mynav">
+
+</div>
 <div id="about">
     <div class="container">
-        <h1>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam ut ipsam sed et illo nisi molestias</h1>
+        <h1 class="text-center ">Elegant Wedding Boxes for Rent</h1>
     </div>
 </div>
 
 <div class="container p-5">
     <h2 class="text-center">Initial Craf</h2>
-    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eius quis nisi maiores earum provident, obcaecati
-        deserunt similique illum reiciendis? Iste quidem cupiditate vero voluptas adipisci dicta sunt consectetur
-        maxime? Necessitatibus.</p>
-</div>
+    <p style="font-size: 20px;">Initial Craft didirikan pada Januari tahun 2024,oleh Bapak Ardiansyah . Berawal dari kecintaan Bapak Ardiansyah
+        terhadap seni dan kerajinan tangan, ia terinspirasi untuk menciptakan box wedding yang unik dan personal untuk
+        para pasangan yang ingin merayakan pernikahan mereka dengan cara yang istimewa. Initial Craft menawarkan
+        berbagai macam box wedding dengan desain yang beragam dan dapat disesuaikan dengan kebutuhan dan selera para
+        pelanggan. Box wedding Initial Craft terbuat dari bahan-bahan berkualitas tinggi dan dibuat dengan tangan yang
+        terampil, sehingga menghasilkan box wedding yang indah dan tahan lama.<p>
+
 
 <h2 class="text-center">Product</h2>
 <div class="container">
     <div class="row">
         <div class="col">
             <div class="card" style="width: 20rem;">
-                <img src="../../static/img/logo.png" class="card-img-top" alt="">
+                <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
                 <div class="card-body">
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
@@ -32,7 +44,7 @@
         </div>
         <div class="col">
             <div class="card" style="width: 20rem;">
-                <img src="../../static/img/logo.png" class="card-img-top" alt="">
+                <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
                 <div class="card-body">
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
@@ -45,7 +57,7 @@
         </div>
         <div class="col">
             <div class="card" style="width: 20rem;">
-                <img src="../../static/img/logo.png" class="card-img-top" alt="">
+                <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
                 <div class="card-body">
                     <h5 class="card-title">Card title</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the

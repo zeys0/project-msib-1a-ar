@@ -1,7 +1,19 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<div class="container p-3">
+<style>
+    .navbar-nav .nav-link {
+        color: rgb(5, 5, 5);
+        text-underline-offset: 10px;
+    }
+</style>
+<div class="mynav ">
+    
+</div>
+<div class="container py-3 ">
+    <h2 class="text-center">Pesanan Saya</h2>
+</div>
+<div class="container pb-3">
     <div class="row justify-content-center">
         <div class="col-11">
             <div class="card p-3">
@@ -10,7 +22,8 @@
                 <div class="card mb-3">
                     <div class="row ">
                         <div class="col-md-2">
-                            <img src="../../static/img/logo.png" class="img-fluid rounded-start "  style="max-width: 150px;"alt="...">
+                            <img src="../../static/img/logo.png" class="img-fluid rounded-start "
+                                style="max-width: 150px;" alt="...">
                         </div>
                         <div class="col-md-8 row">
                             <div class="card-body row ">
@@ -30,9 +43,9 @@
                 </div>
                 {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="6"> Tidak ada data pesan anda </td>
-                    </tr>
+                <tr>
+                    <td colspan="6"> Tidak ada data pesan anda </td>
+                </tr>
                 {% endif %}
 
             </div>
@@ -40,9 +53,3 @@
     </div>
 </div>
 {% endblock %}
-
-
-
-
-   
-    
