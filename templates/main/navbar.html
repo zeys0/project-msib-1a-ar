@@ -1,24 +1,48 @@
 <style>
     .navbar-scrolled {
-        background-color: #343a40;
-        position: fixed;
-        top: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
         width: 100%;
-        z-index: 1020;
+        z-index: 10;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+    }
 
+    .navbar-scrolled .navbar-nav .nav-link {
+        color: rgb(0, 0, 0);
+        transition: color 0.3s ease;
+    }
+
+    .navbar-scrolled .navbar-nav .nav-link:hover,
+    .navbar-scrolled .navbar-nav .nav-link:focus {
+        color: rgb(0, 0, 0);
+        opacity: 0.7;
+    }
+
+
+
+    .navbar-nav .nav-link {
+        color: rgb(248, 250, 252);
+        text-underline-offset: 10px;
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link:focus {
+        text-decoration: underline;
+        color: rgb(241, 245, 249);
+        opacity: 0.7;
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand" href="#page-top"><img src="{{url_for('static', filename='images/logo.png')}}"
                 style="height: 50px" alt="..." /></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-
             <i class="fas fa-bars ms-1"></i>
         </button>
-        <div class="collapse navbar-collapse " id="navbarResponsive">
+        <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav nav-underline ms-auto py-4 py-lg-0">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item">
@@ -32,24 +56,23 @@
                 </li>
                 <div style="display: flex; gap: 4px;">
                     <li class="nav-item">
-                        <a href="/signup" class="btn btn-outline-success">Sign Up</a>
+                        <a href="/signup" class="btn btn-outline-success rounded-pill">Sign Up</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/login" class="btn btn-outline-success">Sign In</a>
+                        <a href="/login" class="btn btn-outline-success rounded-pill">Sign In</a>
                     </li>
                 </div>
             </ul>
         </div>
     </div>
 </nav>
+
 <script>
     window.addEventListener('scroll', function () {
         var navbar = document.getElementById('mainNav');
         if (window.scrollY > 50) {
             navbar.classList.add('navbar-scrolled');
-
         } else {
-
             navbar.classList.remove('navbar-scrolled');
         }
     });
