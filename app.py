@@ -5,7 +5,16 @@ from pymongo import MongoClient, DESCENDING
 from os.path import join, dirname
 from dotenv import load_dotenv
 from flask_paginate import Pagination
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import (
+    Flask,
+    render_template,
+    jsonify,
+    request,
+    redirect,
+    url_for,
+    flash,
+    session,
+)
 from bson import ObjectId
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
@@ -24,13 +33,13 @@ client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 app.secret_key = SECRET_KEY
 
+
 @app.route("/")
 def home():
-    featured_products = db["products"].find()
-    tips = db["tips"].find()
-    return render_template(
-        "main/home.html", featured_products=featured_products, tips=tips
-    )
+    username = session.get("username")
+    logged_in = session.get("logged_in", False)
+    return render_template("main/home.html", logged_in=logged_in, users=username)
+
 
 @app.route("/admin")
 def adminHome():
@@ -76,24 +85,6 @@ def kelolaProduk():
         )
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login"))
-    # Pagination
-    # page = request.args.get("page", 1, type=int)
-    # per_page = request.args.get("per_page", 3, type=int)
-    # offset = (page - 1) * per_page
-    # produk_on_page = list(db.products.find().skip(offset).limit(per_page))
-    # pagination = Pagination(
-    #     page=page,
-    #     per_page=per_page,
-    #     total=db.products.count_documents({}),
-    #     show_single_page=False,
-    #     alignment="end",
-    # )
-
-    # return render_template(
-    #     "dashboard/kelolaProduk.html",
-    #     produk_coll=produk_on_page,
-    #     pagination=pagination,
-    # )
 
 
 @app.route("/kelolaproduk/add", methods=["POST"])
@@ -176,25 +167,34 @@ def deleteDatasProduk(id):
 
 @app.route("/about")
 def about():
-    return render_template("main/about.html")
+    logged_in = session.get("logged_in", False)
+    users = session.get("username", False)
+    return render_template("main/about.html", logged_in=logged_in, users=users)
 
 
-@app.route("/profile/<username>")
+@app.route("/home/profile/<username>")
 def profile(username):
     # an endpoint for retrieving a user's profile information
     # and all of their posts
-    token_receive = request.cookies.get("mytoken")
+    token_receive = request.cookies.get("tokenuser")
     try:
+        users = session.get("username", False)
+        logged_in = session.get("logged_in", False)
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         # if this is my own profile, True
         # if this is somebody else's profile, False
         status = username == payload["id"]
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template("profile.html", user_info=user_info, status=status)
+        return render_template(
+            "main/profile.html",
+            user_info=user_info,
+            status=status,
+            logged_in=logged_in,
+            users=users,
+        )
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
+        return redirect(url_for("login"))
 
 
 @app.route("/update_profile", methods=["POST"])
@@ -208,10 +208,10 @@ def save_img():
         noHp_receive = request.form["noHp_give"]
         email_receive = request.form["email_give"]
         new_doc = {
-        "username": username_receive,
-        "profile_name": nama_receive,
-        "no_telepon": noHp_receive,
-        "email": email_receive,
+            "username": username_receive,
+            "profile_name": nama_receive,
+            "no_telepon": noHp_receive,
+            "email": email_receive,
         }
         if "file_give" in request.files:
             file = request.files["file_give"]
@@ -264,23 +264,40 @@ def order():
     return render_template("main/order.html")
 
 
-@app.route("/pesanan")
+@app.route("/home/pesanan")
 def pesanan():
-    pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
-    return render_template("main/pesanan.html", pesanan_collet=pesanan_collet)
+    token_receive = request.cookies.get("tokenuser")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload.get("id")})
+        logged_in = session.get("logged_in", False)
+        users = session.get("username", False)
+        pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
+        return render_template(
+            "main/pesanan.html",
+            user_info=user_info,
+            pesanan_collet=pesanan_collet,
+            logged_in=logged_in,
+            users=users,
+        )
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 @app.route("/produk")
 def produk():
-    pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
-    return render_template("main/produk.html", pesanan_collet=pesanan_collet)
+    logged_in = session.get("logged_in", False)
+    users = session.get("username", False)
+    produk_coll = list(db.products.find().sort("_id", DESCENDING))
+    return render_template(
+        "main/produk.html", produk_coll=produk_coll, logged_in=logged_in, users=users
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login/login.html")
-
     else:
         username_receive = request.form["username_give"]
         password_receive = request.form["password_give"]
@@ -291,6 +308,7 @@ def login():
                 "password": password_hash,
             }
         )
+        res = db.users.find_one({"username": username_receive}, {"_id": False})
 
         if result:
             role = result.get("role", "user")
@@ -299,9 +317,11 @@ def login():
                 "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+            session["logged_in"] = True
+            session["role"] = role
+            session["username"] = username_receive
 
             return jsonify({"result": "success", "token": token, "role": role})
-
         else:
             return jsonify(
                 {
@@ -309,6 +329,13 @@ def login():
                     "msg": "We could not find a user with that id/password combination",
                 }
             )
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    session.pop("logged_in", True)
+    return redirect(url_for("home"))
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -342,46 +369,46 @@ def sign_up():
             return jsonify({"result": "error", "message": "Internal Server Error"}), 500
 
 
-def seed_database():
-    client = MongoClient(
-        "mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-    )
-    db = client["wedding_box_rental"]
+# def seed_database():
+#     client = MongoClient(
+#         "mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#     )
+#     db = client["wedding_box_rental"]
 
-    # Hapus koleksi jika sudah ada sebelumnya
-    db["products"].drop()
-    db["tips"].drop()
+#     # Hapus koleksi jika sudah ada sebelumnya
+#     db["products"].drop()
+#     db["tips"].drop()
 
-    # Data produk sampel
-    products = [
-        {
-            "name": "Floral Fantasy",
-            "description": "Beautiful floral arrangement",
-            "price": 99,
-        },
-        {"name": "Modern Elegance", "description": "Chic table setting", "price": 79},
-        {"name": "Love Story", "description": "Romantic decor set", "price": 129},
-    ]
+#     # Data produk sampel
+#     products = [
+#         {
+#             "name": "Floral Fantasy",
+#             "description": "Beautiful floral arrangement",
+#             "price": 99,
+#         },
+#         {"name": "Modern Elegance", "description": "Chic table setting", "price": 79},
+#         {"name": "Love Story", "description": "Romantic decor set", "price": 129},
+#     ]
 
-    # Data tips sampel
-    tips = [
-        {
-            "title": "Choosing the Right Venue",
-            "description": "Tips on selecting the perfect venue.",
-        },
-        {
-            "title": "Floral Arrangement Ideas",
-            "description": "Explore trending floral arrangements.",
-        },
-    ]
+#     # Data tips sampel
+#     tips = [
+#         {
+#             "title": "Choosing the Right Venue",
+#             "description": "Tips on selecting the perfect venue.",
+#         },
+#         {
+#             "title": "Floral Arrangement Ideas",
+#             "description": "Explore trending floral arrangements.",
+#         },
+#     ]
 
-    # Masukkan data ke dalam koleksi
-    db["products"].insert_many(products)
-    db["tips"].insert_many(tips)
-    print("Database has been seeded!")
+#     # Masukkan data ke dalam koleksi
+#     db["products"].insert_many(products)
+#     db["tips"].insert_many(tips)
+#     print("Database has been seeded!")
 
 
-if __name__ == "__main__":
-    seed_database()
+# if __name__ == "__main__":
+#     seed_database()
 if __name__ == "__main__":
     app.run("0.0.0.0", port=8000, debug=True)

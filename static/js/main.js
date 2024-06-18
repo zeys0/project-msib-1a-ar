@@ -58,9 +58,8 @@ function login() {
       success: function (response) {
         if (response.result === "success") {
             if(response.role === "user"){
-
                 alert("Login succes");
-                $.cookie("tokenuser", response["token"], { path: "/" });
+                $.cookie("tokenuser", response["token"], { path: "/home", });
                 window.location.replace("/");
             }else if(response.role === "admin"){
                 alert("Login succes to admin");
