@@ -13,7 +13,6 @@ from flask import (
     redirect,
     url_for,
     flash,
-    session,
 )
 from bson import ObjectId
 from datetime import datetime, timedelta
@@ -35,10 +34,22 @@ app.secret_key = SECRET_KEY
 
 
 @app.route("/")
+def hello():
+    return render_template("main/home.html")
+
+
+@app.route("/home")
 def home():
-    username = session.get("username")
-    logged_in = session.get("logged_in", False)
-    return render_template("main/home.html", logged_in=logged_in, users=username)
+    token_receive = request.cookies.get("tokenuser")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        logged_in = payload["id"]
+        user_info = db.users.find_one({"username": payload.get("id")})
+        return render_template(
+            "main/home.html", user_info=user_info, logged_in=logged_in
+        )
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 @app.route("/admin")
@@ -167,31 +178,34 @@ def deleteDatasProduk(id):
 
 @app.route("/about")
 def about():
-    logged_in = session.get("logged_in", False)
-    users = session.get("username", False)
-    return render_template("main/about.html", logged_in=logged_in, users=users)
+    return render_template("main/about.html")
+
+
+@app.route("/home/about")
+def aboutLogin():
+    token_receive = request.cookies.get("tokenuser")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        logged_in = payload["id"]
+        user_info = db.users.find_one({"username": payload.get("id")})
+        return render_template(
+            "main/about.html", user_info=user_info, logged_in=logged_in
+        )
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 @app.route("/home/profile/<username>")
 def profile(username):
-    # an endpoint for retrieving a user's profile information
-    # and all of their posts
     token_receive = request.cookies.get("tokenuser")
     try:
-        users = session.get("username", False)
-        logged_in = session.get("logged_in", False)
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        # if this is my own profile, True
-        # if this is somebody else's profile, False
+        logged_in = payload["id"]
         status = username == payload["id"]
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
         return render_template(
-            "main/profile.html",
-            user_info=user_info,
-            status=status,
-            logged_in=logged_in,
-            users=users,
+            "main/profile.html", user_info=user_info, status=status, logged_in=logged_in
         )
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login"))
@@ -269,16 +283,14 @@ def pesanan():
     token_receive = request.cookies.get("tokenuser")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        logged_in = payload["id"]
         user_info = db.users.find_one({"username": payload.get("id")})
-        logged_in = session.get("logged_in", False)
-        users = session.get("username", False)
         pesanan_collet = list(db.pesanan.find().sort("_id", DESCENDING))
         return render_template(
             "main/pesanan.html",
             user_info=user_info,
             pesanan_collet=pesanan_collet,
             logged_in=logged_in,
-            users=users,
         )
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("login"))
@@ -286,12 +298,26 @@ def pesanan():
 
 @app.route("/produk")
 def produk():
-    logged_in = session.get("logged_in", False)
-    users = session.get("username", False)
     produk_coll = list(db.products.find().sort("_id", DESCENDING))
-    return render_template(
-        "main/produk.html", produk_coll=produk_coll, logged_in=logged_in, users=users
-    )
+    return render_template("main/produk.html", produk_coll=produk_coll)
+
+
+@app.route("/home/produk")
+def produkLogin():
+    token_receive = request.cookies.get("tokenuser")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        logged_in = payload["id"]
+        user_info = db.users.find_one({"username": payload.get("id")})
+        produk_coll = list(db.products.find().sort("_id", DESCENDING))
+        return render_template(
+            "main/produk.html",
+            user_info=user_info,
+            logged_in=logged_in,
+            produk_coll=produk_coll,
+        )
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -308,8 +334,6 @@ def login():
                 "password": password_hash,
             }
         )
-        res = db.users.find_one({"username": username_receive}, {"_id": False})
-
         if result:
             role = result.get("role", "user")
             payload = {
@@ -317,10 +341,6 @@ def login():
                 "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            session["logged_in"] = True
-            session["role"] = role
-            session["username"] = username_receive
-
             return jsonify({"result": "success", "token": token, "role": role})
         else:
             return jsonify(
@@ -329,13 +349,6 @@ def login():
                     "msg": "We could not find a user with that id/password combination",
                 }
             )
-
-
-@app.route("/logout")
-def logout():
-    session.pop("username", None)
-    session.pop("logged_in", True)
-    return redirect(url_for("home"))
 
 
 @app.route("/signup", methods=["GET", "POST"])

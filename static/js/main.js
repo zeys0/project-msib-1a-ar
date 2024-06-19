@@ -60,7 +60,7 @@ function login() {
             if(response.role === "user"){
                 alert("Login succes");
                 $.cookie("tokenuser", response["token"], { path: "/home", });
-                window.location.replace("/");
+                window.location.replace("/home");
             }else if(response.role === "admin"){
                 alert("Login succes to admin");
                 $.cookie("mytoken", response["token"], { path: "/admin" });

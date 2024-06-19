@@ -22,6 +22,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navigation navbar-nav nav-underline menu ms-auto py-4 py-lg-0">
+                {% if logged_in %}
+                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home/produk">Product</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/home/pesanan">Pesanan</a>
+                </li>
+
+                {% elif not logged_in %}
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
@@ -29,16 +43,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/produk">Product</a>
                 </li>
-                {% if logged_in %}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/home/pesanan">Pesanan</a>
-                </li>
                 {% endif %}
 
             </ul>
         </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse" id="navbarResponsive">
 
             <ul class="navbar-nav ms-auto justify-content-center" style="text-decoration: none;">
 
@@ -46,12 +56,12 @@
                 <li class="nav-item dropdown" style="z-index: 1;">
                     <a class="nav-link dropdown-toggle d-flex align-items-center text-capitalize" href="#"
                         id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{users}}
+                        {{user_info.username}}
                         <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Profile"
                             class="rounded-circle me-2" style="width: 40px; margin-left: 4px;">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px);">
-                        <li><a class="dropdown-item" href="/home/profile/{{users}}">Profile</a></li>
+                        <li><a class="dropdown-item" href="/home/profile/{{user_info.username}}">Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

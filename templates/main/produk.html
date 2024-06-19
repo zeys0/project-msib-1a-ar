@@ -21,7 +21,16 @@
                 <div class="card-body">
                     <h5 class="card-title">{{product.name}}</h5>
                     <p class="card-text">Rp. {{product.price}}</p>
+                    {% if logged_in %}
                     <a href="#" class="btn btn-primary">Order</a>
+                    {% elif not logged_in %}
+                    <a href="#" class="btn btn-primary" onclick="notLogin()">Order</a>
+                    <script>
+                        function notLogin() {
+                            alert("Harap login terlebih dahulu")
+                        }
+                    </script>
+                    {% endif %}
                 </div>
             </div>
         </div>
