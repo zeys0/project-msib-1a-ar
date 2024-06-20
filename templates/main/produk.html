@@ -22,7 +22,56 @@
                     <h5 class="card-title">{{product.name}}</h5>
                     <p class="card-text">Rp. {{product.price}}</p>
                     {% if logged_in %}
-                    <a href="#" class="btn btn-primary">Order</a>
+                    <a href="#" class="btn btn-primary" onclick="openOrderModal">Order</a>
+                    <script>
+
+                        let selectedProductName = '';
+                        let selectedProductPrice = 0;
+
+                        function openOrderModal(productName, productPrice) {
+                            selectedProductName = productName;
+                            selectedProductPrice = productPrice;
+
+                            $('#orderModalLabel').text(`Pesan ${productName}`);
+                            $('#harga').text(`Rp. ${productPrice},0`);
+
+                            $('#orderModal').modal('show');
+                        }
+
+                        function submitOrder() {
+                            let nama = $('#nama').val();
+                            let alamat = $('#alamat').val();
+                            let tanggal = $('#tanggal').val();
+                            let jumlah = $('#jumlah').val();
+                            let harga = $('#harga').text();
+
+                            if (nama === "" || alamat === "" || tanggal === "" || jumlah === "") {
+                                alert("Harap isi semua bidang");
+                                return;
+                            }
+
+                            let orderData = {
+                                product_name: selectedProductName,
+                                product_price: selectedProductPrice,
+                                customer_name: nama,
+                                address: alamat,
+                                date: tanggal,
+                                quantity: jumlah,
+                                total_price: selectedProductPrice * jumlah
+                            };
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/produk",
+                                data: orderData,
+                                success: function (response) {
+                                    alert("Order berhasil disimpan!");
+                                    $('#orderModal').modal('hide');
+                                }
+                            });
+                        }
+
+                    </script>
                     {% elif not logged_in %}
                     <a href="#" class="btn btn-primary" onclick="notLogin()">Order</a>
                     <script>
@@ -42,5 +91,48 @@
         {% endif %}
     </div>
 </main>
+
+<!-- Order Modal -->
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel">Pesan Produk</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label for="nama">Nama</label>
+                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama anda">
+                    </div>
+                    <div class="form-group">
+                        <label for="alamat">Alamat</label>
+                        <input type="text" class="form-control" id="alamat" placeholder="Masukkan alamat anda">
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" class="form-control" id="tanggal">
+                    </div>
+                    <div class="form-group">
+                        <label for="jumlah">Jumlah Pesanan</label>
+                        <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah pesanan">
+                    </div>
+                    <div class="form-group">
+                        <label for="harga">Total Harga</label>
+                        <p id="harga">Rp. 0</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="orderViaWhatsApp()">Pesan Melalui
+                        WhatsApp</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Order Modal -->
+
 
 {% endblock %}
