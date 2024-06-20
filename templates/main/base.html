@@ -45,20 +45,21 @@
 
     <!-- footer -->
     <div class="footer py-5 my-5 border-top">
-        <footer id="footer" class="row row-cols-1 row-cols-sm-2 row-cols-md-5">
+        <footer id="footer" class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
             <div class="col-md-3 mb-3 d-flex align-items-center justify-content-end">
                 <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none">
                     <img src="{{url_for('static', filename='images/logo.png')}}" alt=""
                         style="height: 130px; width: 130px; margin-right: 3px;">
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col mb-3">
                 <p class="text-body-secondary mb-0">"In each of our wedding boxes, you will find the perfect blend of
                     art
                     and love. Make your happy day even more memorable with an elegant touch from our collection!"</p>
             </div>
-            <div class="col-md-1 mb-3"></div>
-            <div class="col-md-2 mb-3">
+            <div class="col row mb-3">
+                <div class="col mb-3"></div>
+                <div class="col">
                 <h5>Our Store</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="/" class="nav-link p-0 text-body-secondary">Home</a></li>
@@ -67,8 +68,9 @@
                     </li>
                     <li class="nav-item mb-2"><a href="/login" class="nav-link p-0 text-body-secondary">Login</a></li>
                 </ul>
+                </div>
             </div>
-            <div class="col-md-2 mb-3">
+            <div class="col mb-3">
                 <h5>Get In Touch</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary"><svg

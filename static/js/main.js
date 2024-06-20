@@ -6,7 +6,6 @@ function update_profile() {
     let email = $("#email").val();
     let form_data = new FormData();
     form_data.append("file_give", file);
-    form_data.append("username_give", username);
     form_data.append("nama_give", nama);
     form_data.append("noHp_give", noHp);
     form_data.append("email_give", email);
@@ -14,7 +13,7 @@ function update_profile() {
 
     $.ajax({
         type: "POST",
-        url: "/update_profile",
+        url: "/home/update_profile",
         data: form_data,
         cache: false,
         contentType: false,

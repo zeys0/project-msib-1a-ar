@@ -79,8 +79,8 @@
           <li class="nav-item dropdown" style="z-index: 1;">
             <a class="nav-link dropdown-toggle d-flex align-items-center text-capitalize" href="#" id="navbarDropdown"
               role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{user_info.username}}
-              <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Profile" class="rounded-circle me-2"
+              {{user_info.profile_name}}
+              <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="Profile" class="rounded-circle me-2"
                 style="width: 40px; margin-left: 4px;">
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px);">
@@ -120,24 +120,24 @@
             <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" width=100 height=100 alt="">
             <div class="round">
               <input id="input-pic" class="file-input" type="file" name="resume" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
+                <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
+                <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0"/>
+              </svg>
             </div>
           </div>
           <div class="m-3 px-3">
             <div class="mb-3">
-              <label for="Username" class="form-label">Username</label>
-              <input type="text" class="form-control" id="Username" placeholder="{{user_info.username}}">
-            </div>
-            <div class="mb-3">
               <label for="name" class="form-label">Nama</label>
-              <input type="text" class="form-control" id="name" placeholder="{{user_info.profile_name}}">
+              <input type="text" class="form-control" id="nama" placeholder="masukkan nama" value="{{user_info.profile_name}}">
             </div>
             <div class="mb-3">
               <label for="noHp" class="form-label">No Telphone</label>
-              <input type="text" class="form-control" id="noHp" placeholder="{{user_info.no_telepon}}">
+              <input type="text" class="form-control" id="noHp" placeholder="masukkan no telphon yang terhubung dengan WhatsApp" value="{{user_info.no_telepon}}">
             </div>
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="{{user_info.email}}">
+              <input type="email" class="form-control" id="email" placeholder="masukkan email" value="{{user_info.email}}">
             </div>
             <div class="row justify-content-center ">
               <div class="col-6 ">

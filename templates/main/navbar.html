@@ -56,8 +56,8 @@
                 <li class="nav-item dropdown" style="z-index: 1;">
                     <a class="nav-link dropdown-toggle d-flex align-items-center text-capitalize" href="#"
                         id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{user_info.username}}
-                        <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Profile"
+                        {{user_info.profile_name}}
+                        <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="Profile"
                             class="rounded-circle me-2" style="width: 40px; margin-left: 4px;">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px);">

@@ -41,6 +41,7 @@ def hello():
 @app.route("/home")
 def home():
     token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         logged_in = payload["id"]
@@ -184,6 +185,7 @@ def about():
 @app.route("/home/about")
 def aboutLogin():
     token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         logged_in = payload["id"]
@@ -198,6 +200,7 @@ def aboutLogin():
 @app.route("/home/profile/<username>")
 def profile(username):
     token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         logged_in = payload["id"]
@@ -211,22 +214,23 @@ def profile(username):
         return redirect(url_for("login"))
 
 
-@app.route("/update_profile", methods=["POST"])
+@app.route("/home/update_profile", methods=["POST"])
 def save_img():
-    token_receive = request.cookies.get("mytoken")
+    token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
-        username_receive = request.form["username_give"]
         nama_receive = request.form["nama_give"]
         noHp_receive = request.form["noHp_give"]
         email_receive = request.form["email_give"]
+
         new_doc = {
-            "username": username_receive,
             "profile_name": nama_receive,
             "no_telepon": noHp_receive,
             "email": email_receive,
         }
+
         if "file_give" in request.files:
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
@@ -281,6 +285,7 @@ def order():
 @app.route("/home/pesanan")
 def pesanan():
     token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         logged_in = payload["id"]
@@ -305,6 +310,7 @@ def produk():
 @app.route("/home/produk")
 def produkLogin():
     token_receive = request.cookies.get("tokenuser")
+    print(token_receive)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         logged_in = payload["id"]
@@ -370,8 +376,8 @@ def sign_up():
                 "profile_pic": "",
                 "profile_pic_real": "img/profile.jpg",
                 "profile_info": "",
-                "no_telepon": "Masukkan No.Thelephon yang terhubung WhatsApp",
-                "email": "Masukkan email",
+                "no_telepon": "",
+                "email": "",
                 "role": "user",
             }
             db.users.insert_one(doc)
