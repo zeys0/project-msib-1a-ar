@@ -29,3 +29,15 @@
     <hr class="mx-auto" style="max-width: 100%; width: 95%; margin-top: 15px;">
 
 </div>
+
+
+
+<script>
+    // Script to handle sidebar collapse
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content');
+    document.querySelector('.navbar-toggler').addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('collapsed');
+    });
+</script>

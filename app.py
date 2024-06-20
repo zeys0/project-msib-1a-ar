@@ -59,9 +59,13 @@ def adminHome():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
+        user_count = db.users.count_documents({"role": "user"})
         total_produk = db.products.count_documents({})
         return render_template(
-            "dashboard/HomeDash.html", total_produk=total_produk, user_info=user_info
+            "dashboard/HomeDash.html",
+            total_produk=total_produk,
+            user_info=user_info,
+            user_count=user_count,
         )
     except jwt.ExpiredSignatureError:
         msg = "Your token has expired"
@@ -232,13 +236,17 @@ def save_img():
         }
 
         if "file_give" in request.files:
+
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
             file_path = f"profile_pics/{username}.{extension}"
+            if not os.path.exists("static/profile_pics"):
+                os.makedirs("static/profile_pics")
             file.save("./static/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
+
         db.users.update_one({"username": payload["id"]}, {"$set": new_doc})
         return jsonify({"result": "success", "msg": "Profile updated!"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
@@ -388,46 +396,5 @@ def sign_up():
             return jsonify({"result": "error", "message": "Internal Server Error"}), 500
 
 
-# def seed_database():
-#     client = MongoClient(
-#         "mongodb+srv://test:sparta@cluster0.2m7qwhx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-#     )
-#     db = client["wedding_box_rental"]
-
-#     # Hapus koleksi jika sudah ada sebelumnya
-#     db["products"].drop()
-#     db["tips"].drop()
-
-#     # Data produk sampel
-#     products = [
-#         {
-#             "name": "Floral Fantasy",
-#             "description": "Beautiful floral arrangement",
-#             "price": 99,
-#         },
-#         {"name": "Modern Elegance", "description": "Chic table setting", "price": 79},
-#         {"name": "Love Story", "description": "Romantic decor set", "price": 129},
-#     ]
-
-#     # Data tips sampel
-#     tips = [
-#         {
-#             "title": "Choosing the Right Venue",
-#             "description": "Tips on selecting the perfect venue.",
-#         },
-#         {
-#             "title": "Floral Arrangement Ideas",
-#             "description": "Explore trending floral arrangements.",
-#         },
-#     ]
-
-#     # Masukkan data ke dalam koleksi
-#     db["products"].insert_many(products)
-#     db["tips"].insert_many(tips)
-#     print("Database has been seeded!")
-
-
-# if __name__ == "__main__":
-#     seed_database()
 if __name__ == "__main__":
     app.run("0.0.0.0", port=8000, debug=True)

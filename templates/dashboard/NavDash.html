@@ -3,18 +3,16 @@
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item dropdown" style=" transform: translateX(-10px); z-index: 1;">
+            <li class="nav-item dropdown" style="transform: translateX(-10px); z-index: 1;">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     {{user_info.username}}
-                    <img src="{{url_for('static', filename='img/logo.png')}}" alt="Profile" class="rounded-circle me-2 "
-                        style="width: 30px; margin-left: 4px;">
+                    <img src="{{url_for('static', filename='img/profile.jpg')}}" alt="Profile"
+                        class="rounded-circle ms-2" style="width: 30px;">
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px); ">
-
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="transform: translateX(-45px);">
                     <li>
                         <hr class="dropdown-divider">
                     </li>
