@@ -1,4 +1,7 @@
 {% extends 'dashboard/BaseDash.html' %}
+{% block title %}
+Detail Pesanan
+{% endblock %}
 {% block content %}
 
 <div class="content">
@@ -8,6 +11,16 @@
                 <h2>Detail Pesanan</h2>
                 <p class="subtitle">Wedding Box</p>
             </div>
+            <div class="mt-1" style="margin-left: auto;">
+                <a href="/admin/kelolapesanan" class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                    </svg>
+                    Kembali
+                </a>
+            </div>
         </div>
 
         <div class="row">
@@ -16,19 +29,29 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <img src="/static/uploads/{{ pesanan.image }}" alt="Gambar Produk" class="img-fluid">
+                            <img src="{{ url_for('static', filename='uploads/' + pesanan.image) }}" alt="Gambar Produk"
+                                class="img-fluid "
+                                style="width: 100%; max-width: 400px; max-height: 300px; border-radius: 10px;">
                         </div>
                         <div class="col-md-9">
-                            <h5 class="card-title">{{ pesanan.product_name }}</h5>
-                            <p class="card-text">{{ pesanan.product_description }}</p>
+                            <h5 class="card-title">{{ pesanan.produk }}</h5>
+                            <p class="card-text">{{pesanan.description}}</p>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">Username pemesan: {{ pesanan.username }}</li>
-                                <li class="list-group-item">Nama pemesan: {{ pesanan.customer_name }}</li>
-                                <li class="list-group-item">Alamat pemesan: {{ pesanan.address }}</li>
-                                <li class="list-group-item">Tanggal pesanan: {{ pesanan.order_date.strftime('%d-%m-%Y') }}</li>
-                                <li class="list-group-item">Tanggal acara: {{ pesanan.event_date.strftime('%d-%m-%Y') }}</li>
-                                <li class="list-group-item">Jumlah box: {{ pesanan.box_count }}</li>
-                                <li class="list-group-item">Total Harga: Rp {{ pesanan.total | int | currency_format }}</li>
+                                <li class="list-group-item">Nama pemesan: {{ pesanan.customer }}</li>
+                                <li class="list-group-item">Alamat pemesan: {{ pesanan.alamat }}</li>
+                                <li class="list-group-item">Tanggal pesanan: {{ pesanan.created_at
+                                    }}</li>
+                                <li class="list-group-item">Tanggal acara: {{ pesanan.tanggalpesanan }}
+                                </li>
+                                <li class="list-group-item">Jumlah box: {{ pesanan.jumlahpesanan }}</li>
+                                <li class="list-group-item">Total Harga: Rp {{ pesanan.totalprice}}
+                                </li>
+                                <hr>
+                                <form action="/detailpesanan/delete/{{pesanan._id|string}}" method="POST"
+                                    onsubmit="return validateDelete()">
+                                    <button class=" btn btn-danger" type="submit">Delete</button>
+                                </form>
                             </ul>
                         </div>
                     </div>
@@ -37,5 +60,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function validateDelete() {
+        return confirm('Apakah anda yakin ingin menghapus pesanan')
+    }
+</script>
 
 {% endblock %}

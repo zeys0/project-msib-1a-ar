@@ -1,77 +1,31 @@
 {% extends 'main/base.html' %}
-
+{% block title %}
+Product
+{% endblock %}
 {% block content %}
-<style>
-    .navbar-nav .nav-link {
-        color: rgb(5, 5, 5);
-        text-underline-offset: 10px;
-    }
-</style>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/produk.css') }}">
+
 <div class="mynav p-4 mb-4">
 
 </div>
-<main class="container my-5">
-    <h2 class="text-center mb-4">PRODUK</h2>
+<main class="container">
+    <div class="blog-section">
+        <h2>Product</h2>
+    </div>
+
     <div class="row">
         {% if produk_coll|length > 0 %}
         {% for product in produk_coll %}
-        <div class="col-md-4">
-            <div class="card" style="width: 18rem;">
+        <div class="col-md-4 col-lg-2">
+            <div class="card custom-card">
                 <img src="{{url_for('static', filename='/uploads/' + product.image)}}" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{product.name}}</h5>
                     <p class="card-text">Rp. {{product.price}}</p>
                     {% if logged_in %}
-                    <a href="#" class="btn btn-primary" onclick="openOrderModal">Order</a>
-                    <script>
-
-                        let selectedProductName = '';
-                        let selectedProductPrice = 0;
-
-                        function openOrderModal(productName, productPrice) {
-                            selectedProductName = productName;
-                            selectedProductPrice = productPrice;
-
-                            $('#orderModalLabel').text(`Pesan ${productName}`);
-                            $('#harga').text(`Rp. ${productPrice},0`);
-
-                            $('#orderModal').modal('show');
-                        }
-
-                        function submitOrder() {
-                            let nama = $('#nama').val();
-                            let alamat = $('#alamat').val();
-                            let tanggal = $('#tanggal').val();
-                            let jumlah = $('#jumlah').val();
-                            let harga = $('#harga').text();
-
-                            if (nama === "" || alamat === "" || tanggal === "" || jumlah === "") {
-                                alert("Harap isi semua bidang");
-                                return;
-                            }
-
-                            let orderData = {
-                                product_name: selectedProductName,
-                                product_price: selectedProductPrice,
-                                customer_name: nama,
-                                address: alamat,
-                                date: tanggal,
-                                quantity: jumlah,
-                                total_price: selectedProductPrice * jumlah
-                            };
-
-                            $.ajax({
-                                type: "POST",
-                                url: "/produk",
-                                data: orderData,
-                                success: function (response) {
-                                    alert("Order berhasil disimpan!");
-                                    $('#orderModal').modal('hide');
-                                }
-                            });
-                        }
-
-                    </script>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#orderModal{{product._id|string}}">Order</a>
                     {% elif not logged_in %}
                     <a href="#" class="btn btn-primary" onclick="notLogin()">Order</a>
                     <script>
@@ -85,54 +39,107 @@
         </div>
         {% endfor %}
         {% else %}
-        <tr>
-            <td colspan="6"> Tidak ada data pesan anda </td>
-        </tr>
+        <div class="col-12">
+            <p>Tidak ada data pesan anda</p>
+        </div>
         {% endif %}
     </div>
+
 </main>
 
 <!-- Order Modal -->
-<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+{% for products in produk_coll %}
+<div class="modal fade" id="orderModal{{products._id|string}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="orderModalLabel">Pesan Produk</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <img src="{{ url_for('static', filename='uploads/' + products.image) }}">
+                <div class="product-info">
+                    <h6>{{products.name}}</h6>
+                    <p>{{products.description}}</p>
+                </div>
             </div>
+
             <div class="modal-body">
-                <form id="orderForm">
+                <form id="orderForm{{products._id|string}}" action="/home/produk/pesan" method="POST"
+                    enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="nama">Nama</label>
-                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama anda">
+                        <label for="nama{{products._id|string}}">Nama</label>
+                        <input type="text" class="form-control" id="nama{{products._id|string}}"
+                            placeholder="Masukkan nama anda" name="name_give">
                     </div>
                     <div class="form-group">
-                        <label for="alamat">Alamat</label>
-                        <input type="text" class="form-control" id="alamat" placeholder="Masukkan alamat anda">
+                        <label for="alamat{{products._id|string}}">Alamat</label>
+                        <input type="text" class="form-control" id="alamat{{products._id|string}}"
+                            placeholder="Masukkan alamat anda" name="alamat_give">
+                    </div>
+
+                    <div class="form-group" style="display: none;">
+                        <label for="ProdukName{{products._id|string}}">Nama Produk</label>
+                        <input type="text" class="form-control" id="ProdukName{{products._id|string}}"
+                            placeholder="Masukkan nama produk" value="{{products.name}}" name="produk_give">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="ProdukPrice{{products._id|string}}">Harga Produk</label>
+                        <input type="number" class="form-control" id="ProdukPrice{{products._id|string}}"
+                            placeholder="Masukkan harga produk" value="{{products.price}}" name="price_give">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for=" ProdukPrice{{products._id|string}}">Images</label>
+                        <input type="text" class="form-control" id="ProdukPrice{{products._id|string}}"
+                            placeholder="Masukkan harga produk" value="{{products.image}}" name="img_give">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for=" ProdukPrice{{products._id|string}}">Deskripsi</label>
+                        <input type="text" class="form-control" id="ProdukPrice{{products._id|string}}"
+                            placeholder="Masukkan harga produk" value="{{products.description}}" name="desc_give">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tanggal{{products._id|string}}">Tanggal</label>
+                        <input type="date" class="form-control" id="tanggal{{products._id|string}}" name="tanggal_give">
                     </div>
                     <div class="form-group">
-                        <label for="tanggal">Tanggal</label>
-                        <input type="date" class="form-control" id="tanggal">
+                        <label for="jumlah{{products._id|string}}">Jumlah Pesanan</label>
+                        <input type="number" class="form-control" id="jumlah{{products._id|string}}"
+                            placeholder="Masukkan jumlah pesanan" name="pesanan_give">
                     </div>
                     <div class="form-group">
-                        <label for="jumlah">Jumlah Pesanan</label>
-                        <input type="number" class="form-control" id="jumlah" placeholder="Masukkan jumlah pesanan">
+                        <label for="harga{{products._id|string}}">Total Harga</label>
+                        <p id="totalHarga{{products._id|string}}">Rp</p>
                     </div>
-                    <div class="form-group">
-                        <label for="harga">Total Harga</label>
-                        <p id="harga">Rp. 0</p>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Buat Pesanan</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="orderViaWhatsApp()">Pesan Melalui
-                        WhatsApp</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </form>
+
             </div>
         </div>
     </div>
 </div>
+{% endfor %}
+
+{% for products in produk_coll %}
+<script>
+
+    $('#jumlah{{products._id|string}}').on('input', function () {
+        updateTotalHarga('{{products._id|string}}');
+    });
+
+    function updateTotalHarga(id) {
+        let jumlah = $("#jumlah" + id).val();
+        let produkPrice = $("#ProdukPrice" + id).val();
+        let totalHarga = produkPrice * jumlah;
+        $('#totalHarga' + id).text("Rp. " + totalHarga.toLocaleString('id-ID'));
+    }
+
+</script>
+{% endfor %}
+
 <!-- end Order Modal -->
+
 
 
 {% endblock %}

@@ -59,11 +59,13 @@ Kelola
                         <td class="description-cell">{{barangs.description}}</td>
                         <td class="price-cell">{{barangs.price}}</td>
                         <td class="action-cell">
-                            <form action="/kelolaproduk/delete/{{barangs._id|string}}" method="POST">
-                                <button type="submit" class="btn btn-danger" title="Hapus" onclick="conDelete()">
+                            <form action="/kelolaproduk/delete/{{barangs._id|string}}" method="POST"
+                                onsubmit="return conDelete()">
+                                <button type="submit" class="btn btn-danger" title="Hapus">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
+
                             <button type="button" class="btn btn-primary" title="Edit" data-bs-toggle="modal"
                                 data-bs-target="#editData{{barangs._id|string}}">
                                 <i class="fas fa-edit"></i>
@@ -80,7 +82,11 @@ Kelola
             </table>
         </div>
 
-
+        <script>
+            function conDelete() {
+                return confirm("Apakah anda yakin ingin menghapus data?")
+            }
+        </script>
         {{ pagination.links }}
 
 
@@ -183,9 +189,5 @@ Kelola
         <!-- End modal tambah data -->
     </div>
 </div>
-<script>
-    function conDelete() {
-        confirm("Apakah anda yakin ingin menghapus data?")
-    }
-</script>
+
 {% endblock %}

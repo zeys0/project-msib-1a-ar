@@ -25,11 +25,11 @@ Home
                     <div class="card-body d-flex align-items-center">
                         <i class="fas fa-shopping-cart fa-4x"></i>
                         <div class="row">
-                            <span>3</span>
+                            <span>{{total_pesanan}}</span>
                             <span>Total Pesanan</span>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-success  w-100">Detail</a>
+                    <a href="/admin/totalpesanan" class="btn btn-success  w-100">Detail</a>
                 </div>
             </div>
             <div class="col-md-4 col-sm-12 card-content">
@@ -53,7 +53,7 @@ Home
                             <span>Total User</span>
                         </div>
                     </div>
-                    <a href="" class="btn btn-success not-btn  w-100" style="color: transparent;">Detail</a>
+                    <a href="/admin/datauser" class="btn btn-success not-btn  w-100">Detail</a>
                 </div>
             </div>
 
@@ -72,16 +72,28 @@ Home
                         <th>Tanggal pemesanan</th>
                     </tr>
                 </thead>
+
                 <tbody>
+                    {% if pesanan|length > 0 %}
+                    {% for pesanan in pesanan %}
+
                     <tr>
-                        <td>1</td>
-                        <td>Data 1</td>
-                        <td>Data 2</td>
-                        <td>Data 3</td>
+                        <td>{{ (pagination.page - 1) * pagination.per_page + loop.index }}</td>
+                        <td>{{pesanan.customer}}</td>
+                        <td>{{pesanan.produk}}</td>
+                        <td>{{pesanan.created_at}}</td>
+                    </tr>
+                    {% endfor %}
+
+                    {% else %}
+                    <tr>
+                        <td colspan="4">Tidak ada data pesanan</td>
                     </tr>
 
+                    {% endif %}
                 </tbody>
             </table>
+            {{ pagination.links }}
         </div>
     </div>
 </div>

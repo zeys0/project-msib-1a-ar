@@ -1,0 +1,73 @@
+{% extends 'dashboard/BaseDash.html' %}
+{% block title %}
+Data User
+{% endblock %}
+{% block content %}
+
+<div class="content">
+    <div class="container-fluid">
+        <div style="display: flex;">
+            <div>
+                <h2>Dashboard</h2>
+                <p class="subtitle">Data User</p>
+            </div>
+            <div class="mt-1" style="margin-left: auto;">
+                <a href="/admin" class="btn btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                    </svg>
+                    Kembali
+                </a>
+            </div>
+        </div>
+
+
+        <!-- Table -->
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>No telepon</th>
+                        <th>Email</th>
+                        <th>Tanggal registrasi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if user|length > 0 %}
+                    {% for user in user %}
+
+                    <tr>
+                        <td>{{ (pagination.page - 1) * pagination.per_page + loop.index }}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.profile_name}}</td>
+                        <td>{{user.no_telepon}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.created_at}}</td>
+                    </tr>
+                    {% endfor %}
+
+                    {% else %}
+                    <tr>
+                        <td colspan="4">Tidak ada User</td>
+                    </tr>
+
+                    {% endif %}
+                </tbody>
+            </table>
+            {{ pagination.links }}
+        </div>
+
+
+
+
+    </div>
+</div>
+
+{% endblock %}

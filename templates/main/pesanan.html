@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
-
+{% block title %}
+Pesanan
+{% endblock %}
 {% block content %}
 <style>
     .navbar-nav .nav-link {
@@ -8,33 +10,53 @@
     }
 </style>
 <div class="mynav ">
-    
+
 </div>
+
 <div class="container py-3 ">
     <h2 class="text-center">Pesanan Saya</h2>
 </div>
+
 <div class="container pb-3">
+
     <div class="row justify-content-center">
+
         <div class="col-11">
             <div class="card p-3">
+                {% with msg = get_flashed_messages() %} {% if msg %} {% for msg in msg %}
+                <div class="alert alert-success" role="alert">{{msg}}</div>
+
+                {% endfor %} {% endif %} {% endwith %}
+                <script>
+                    window.setTimeout(function () {
+                        $(".alert-success").alert('close');
+                    }, 3000);   
+                </script>
                 {% if pesanan_collet|length > 0 %}
+                <a href="https://wa.me/628558966549?text=Hi%20saya%20mau%20konfirmasi%20pemesanan%20box%20wedding%20dari%20website"
+                    target="_blank" class="btn btn-success" style="max-width: 350px; margin-bottom: 4px;">Konfirmasi
+                    Pesanan Anda
+                    Melalui
+                    Whatsapp</a>
                 {% for pesan in pesanan_collet %}
                 <div class="card mb-3">
                     <div class="row ">
                         <div class="col-md-2">
-                            <img src="../../static/img/logo.png" class="img-fluid rounded-start "
-                                style="max-width: 150px;" alt="...">
+                            <img src="{{ url_for('static', filename='uploads/' + pesan.image) }}"
+                                class="img-fluid rounded-start "
+                                style="width: 100%; height: 100%; object-fit: cover ; max-width: 200px; max-height: 150px;"
+                                alt="...">
                         </div>
                         <div class="col-md-8 row">
                             <div class="card-body row ">
-                                <h5 class="card-title">{{pesan.name}}</h5>
+                                <h5 class="card-title">{{pesan.produk}}</h5>
                                 <div class="col-md-10">
                                     <p class="card-text ">{{pesan.description}}</p>
                                 </div>
                                 <div class="col-md-2" style="text-align: left;">
-                                    <p>Rp. {{pesan.price}}</p>
+                                    <p>Rp. {{pesan.totalprice}}</p>
                                 </div>
-                                <p class="card-text"><small class="text-body-secondary">{{pesan.date}}</small>
+                                <p class="card-text"><small class="text-body-secondary">{{pesan.created_at}}</small>
                                 </p>
                             </div>
 

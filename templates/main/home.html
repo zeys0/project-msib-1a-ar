@@ -1,5 +1,7 @@
 {% extends "main/base.html" %}
-
+{% block title %}
+Home
+{% endblock %}
 {% block header %}
 <!-- header -->
 
@@ -19,7 +21,7 @@
   <div class="carousel-inner mb-4">
     <div class="carousel-item active">
       <img src="{{ url_for('static', filename='images/header1.jpg') }}" class="d-block w-100" alt="...">
-      <div class="carousel-caption d-none d-md-block" style="margin-left: 15px;">
+      <div class="carousel-caption-first d-none d-md-block" style="margin-left: 15px;">
         <h1 style="font-size: 5.5em; font-family: 'Monotype Corsiva', cursive;">Elegant Wedding
           Boxes for Rent</h1>
         <p>Make your special day even more magical with our curated wedding box rentals.</p>

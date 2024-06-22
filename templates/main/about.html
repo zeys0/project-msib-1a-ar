@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
-
+{% block title %}
+About
+{% endblock %}
 {% block content %}
 <style>
     .navbar-nav .nav-link {
@@ -11,14 +13,20 @@
 
 </div>
 <div id="about">
-    <div class="container">
-        <h1 class="text-center ">Elegant Wedding Boxes for Rent</h1>
+    <img src="{{ url_for('static', filename='images/46.jpg') }}" class="d-block w-100" alt="...">
+    <div class="about d-none d-md-block" style="margin-left: 15px;">
+        <h1 style="font-size: 5.5em; font-family: 'Monotype Corsiva', cursive;">Elegant Wedding
+            Boxes for Rent</h1>
     </div>
 </div>
 
-<div class="container p-5">
-    <h2 class="text-center">Initial Craf</h2>
-    <p style="font-size: 20px;">Initial Craft didirikan pada Januari tahun 2024,oleh Bapak Ardiansyah . Berawal dari
+<div class="container">
+    <div class="blog-section">
+        <h2>Initial Craft</h2>
+    </div>
+
+    <p style="font-size: 20px; text-align: center;">Initial Craft didirikan pada Januari tahun 2024,oleh Bapak
+        Ardiansyah . Berawal dari
         kecintaan Bapak Ardiansyah
         terhadap seni dan kerajinan tangan, ia terinspirasi untuk menciptakan box wedding yang unik dan personal untuk
         para pasangan yang ingin merayakan pernikahan mereka dengan cara yang istimewa. Initial Craft menawarkan
@@ -28,47 +36,46 @@
     <p>
 
 
-    <h2 class="text-center">Product</h2>
+    <div class="blog-section">
+        <h2>Product</h2>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col">
                 <div class="card" style="width: 20rem;">
-                    <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
+                    <img src="{{url_for('static', filename='images/43.jpg')}}" class="card-img-top" alt="">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's content.</p>
+                        <h5 class="card-title">Modern Wedding Box</h5>
+                        <p class="card-text">Wedding box yang dibuat dari kayu solid dengan finishing glossy yang
+                            memberikan tampilan elegan dan mewah</p>
                         <div class="d-flex justify-content-end">
-                            <a href="/order" class="btn btn-success">Order</a>
+
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card" style="width: 20rem;">
-                    <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
+                    <img src="{{url_for('static', filename='images/44.jpg')}}" class="card-img-top" alt="">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's content.</p>
+                        <h5 class="card-title">Elegant Wedding Box</h5>
+                        <p class="card-text">Wedding box yang dibuat dari kayu solid dengan finishing glossy yang
+                            memberikan tampilan elegan dan mewah</p>
                         <div class="d-flex justify-content-end">
-                            <a href="/order" class="btn btn-success">Order</a>
+
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card" style="width: 20rem;">
-                    <img src="{{url_for('static', filename='images/logo.png')}}" class="card-img-top" alt="">
+                    <img src="{{url_for('static', filename='images/45.jpg')}}" class="card-img-top" alt="">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's content.</p>
+                        <h5 class="card-title">Classic Wedding Box</h5>
+                        <p class="card-text">Wedding box yang dibuat dari kayu solid dengan finishing glossy yang
+                            memberikan tampilan elegan dan mewah</p>
                         <div class="d-flex justify-content-end">
-                            <a href="/order" class="btn btn-success">Order</a>
+
                         </div>
                     </div>
                 </div>
@@ -76,4 +83,29 @@
         </div>
     </div>
 
-    {% endblock %}
+
+    <div class="fixed-bottom" style="display: flex; justify-content: end; transform: translateX(-15px);">
+        <a href="#carouselExampleCaptions" class="scroll-to-top mx-4 my-4 p-2 rounded-circle border border-primary"
+            style="z-index: 11;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up"
+                viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+            </svg>
+        </a>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 100) {
+                    $('.scroll-to-top').addClass('visible');
+                } else {
+                    $('.scroll-to-top').removeClass('visible');
+                }
+            });
+        });
+    </script>
+</div>
+
+{% endblock %}
