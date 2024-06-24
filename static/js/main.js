@@ -62,7 +62,7 @@ function login() {
                 window.location.replace("/home");
             }else if(response.role === "admin"){
                 alert("Login succes to admin");
-                $.cookie("mytoken", response["token"], { path: "/admin" });
+                $.cookie("tokenuser", response["token"], { path: "/admin" });
                 window.location.replace("/admin");
             }
         } 

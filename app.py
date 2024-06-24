@@ -55,7 +55,7 @@ def home():
 
 @app.route("/admin")
 def adminHome():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
@@ -94,7 +94,7 @@ def adminHome():
 
 @app.route("/admin/datauser")
 def datauser():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
@@ -131,7 +131,7 @@ def datauser():
 
 @app.route("/admin/kelolaproduk")
 def kelolaProduk():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
@@ -306,7 +306,7 @@ def save_img():
 
 @app.route("/admin/kelolapesanan")
 def kelolaPesanan():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
@@ -336,7 +336,7 @@ def kelolaPesanan():
 
 @app.route("/admin/detailpesanan/<id>")
 def detailPesanan(id):
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
@@ -352,7 +352,7 @@ def detailPesanan(id):
 
 @app.route("/admin/kelolapesanan/resetpesanan", methods=["POST"])
 def resetpesanan():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get(TOKEN_USER)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload.get("id")})
